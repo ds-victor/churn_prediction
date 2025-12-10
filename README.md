@@ -3,12 +3,13 @@ A complete end-to-end machine learning pipeline with preprocessing, model select
 
 ## 🌟 Project Overview
 This project implements a full Customer Churn Prediction System using:
-•	Python
-•	Scikit-Learn Pipelines
-•	Feature Engineering (Imputation, Scaling, One-Hot Encoding)
-•	GridSearchCV Hyperparameter Tuning
-•	Streamlit Web Application
-•	Modular, well-structured folder
+- Python
+- Scikit-Learn Pipelines
+- Feature Engineering (Imputation, Scaling, One-Hot Encoding)
+- GridSearchCV Hyperparameter Tuning
+- Streamlit Web Application
+- Modular, well-structured folder
+
 The workflow trains multiple ML models, selects the best one, and serves predictions in a user-friendly web interface.
 
 ## 📁 Project Structure
@@ -47,7 +48,7 @@ customer_churn/
   - venv\Scripts\activate      # Windows
   - source venv/bin/activate   # macOS/Linux
 ### 3️⃣ Install dependencies
-  pip install -r requirements.txt
+  - pip install -r requirements.txt
 
 ## 🧹 Data Preparation
 - Data cleaning and EDA are performed in:
@@ -93,19 +94,19 @@ The functions:
   •	Ensure stable predictions
 
 ## 📊 Technologies Used
-•	Python 3.10+
-•	Pandas, NumPy
-•	Scikit-Learn
-•	Joblib
-•	Streamlit
-•	Jupyter Notebook
+- Python 3.10+
+- Pandas, NumPy
+- Scikit-Learn
+- Joblib
+- Streamlit
+- Jupyter Notebook
 
 ## 🚀 Future Enhancements
-- •	SHAP explainability
-- •	FastAPI REST API
-- •	Docker deployment
-- •	Monitoring & model drift detection
-- •	Optuna Bayesian optimization
+- SHAP explainability
+- FastAPI REST API
+- Docker deployment
+- Monitoring & model drift detection
+- Optuna Bayesian optimization
 
 ## 🤝 Contributing
 - Contributions, suggestions, and feature requests are welcome.
