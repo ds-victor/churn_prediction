@@ -37,6 +37,7 @@ customer_churn/
 │
 └── README.md
 
+```
 ## ⚙️ Installation & Setup
 # 1️⃣ Clone the repository
   git clone https://github.com/yourusername/customer_churn.git
