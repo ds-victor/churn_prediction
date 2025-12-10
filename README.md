@@ -52,11 +52,12 @@ customer_churn/
 
 ## 🧹 Data Preparation
 - Data cleaning and EDA are performed in:
-  •	notebooks/data_cleaning.ipynb
-  •	notebooks/eda.ipynb
+    - notebooks/data_cleaning.ipynb
+    - notebooks/eda.ipynb
 - After cleaning, export the processed dataset to:
-  data/cleaned_data.csv
-- The training pipeline expects this file to exist
+    - data/cleaned_data.csv
+
+The training pipeline expects this file to exist
 
 ## 🤖 Model Training
 Run training from the project root:
