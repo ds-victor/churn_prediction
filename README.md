@@ -1,4 +1,4 @@
-### 📊 Customer Churn Prediction
+# 📊 Customer Churn Prediction
 A complete end-to-end machine learning pipeline with preprocessing, model selection, and Streamlit deployment.
 
 ## 🌟 Project Overview
@@ -39,14 +39,14 @@ customer_churn/
 
 ```
 ## ⚙️ Installation & Setup
-# 1️⃣ Clone the repository
+### 1️⃣ Clone the repository
   git clone https://github.com/yourusername/customer_churn.git
   cd customer_churn
-# 2️⃣ Create and activate a virtual environment
+### 2️⃣ Create and activate a virtual environment
   python -m venv venv
   venv\Scripts\activate      # Windows
   source venv/bin/activate   # macOS/Linux
-# 3️⃣ Install dependencies
+### 3️⃣ Install dependencies
   pip install -r requirements.txt
 
 ## 🧹 Data Preparation
