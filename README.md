@@ -43,9 +43,9 @@ customer_churn/
   git clone https://github.com/yourusername/customer_churn.git
   cd customer_churn
 ### 2️⃣ Create and activate a virtual environment
-  python -m venv venv
-  venv\Scripts\activate      # Windows
-  source venv/bin/activate   # macOS/Linux
+  - python -m venv venv
+  - venv\Scripts\activate      # Windows
+  - source venv/bin/activate   # macOS/Linux
 ### 3️⃣ Install dependencies
   pip install -r requirements.txt
 
