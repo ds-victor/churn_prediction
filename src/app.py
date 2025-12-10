@@ -1,18 +1,18 @@
 """
-Streamlit app for single and batch predictions.
+Streamlit app for Customer Churn Prediction.
 
-Run:
-    streamlit run src.app
+Note:
+- To avoid "attempted relative import" errors when Streamlit runs the script,
+  this file inserts the project root into sys.path at runtime (local dev convenience).
 """
 
-# --- Ensures project root is on sys.path ---
+# Shim: make project root importable (helps when Streamlit changes cwd)
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]   # parent of src/
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from typing import Any, Dict
 
@@ -23,18 +23,33 @@ from src.config import DATA_FILE, TARGET_COL
 from src.deployment import predict_single, predict_batch
 from src.preprocessing import data_load
 
-
-
+# Cache loading sample data to build UI
 @st.cache_data
 def load_sample_data() -> pd.DataFrame:
-    return data_load(DATA_FILE)
+    df = data_load(DATA_FILE)
+    return df
 
 
 def build_input_form(df_sample: pd.DataFrame) -> Dict[str, Any]:
+    """
+    Build input widgets based on df_sample columns.
+    Special-case: SeniorCitizen is presented as a categorical (0/1).
+    """
+    st.subheader("Enter Customer Details")
     feature_cols = [c for c in df_sample.columns if c != TARGET_COL]
+
     input_data: Dict[str, Any] = {}
     for col in feature_cols:
         series = df_sample[col]
+
+        # Special-case for SeniorCitizen: show selectbox with 0/1
+        if col == "SeniorCitizen":
+            options = sorted(series.dropna().unique().astype(int).tolist()) if not series.dropna().empty else [0, 1]
+            # ensure options are 0/1
+            options = [int(o) for o in options] if options else [0, 1]
+            input_data[col] = st.selectbox(label=col, options=options, index=0)
+            continue
+
         if pd.api.types.is_numeric_dtype(series):
             default = float(series.median()) if not series.isna().all() else 0.0
             input_data[col] = st.number_input(label=col, value=default)
@@ -48,35 +63,56 @@ def build_input_form(df_sample: pd.DataFrame) -> Dict[str, Any]:
 
 def main() -> None:
     st.title("Customer Churn Prediction")
-    st.markdown("Model trained with pipelines (imputer + scaler for numeric, imputer + OHE for categorical).")
+
+    st.markdown(
+        """
+        Input customer information and predict whether the customer will churn.
+        The model uses preprocessing pipelines (imputer + scaler, and imputer + OHE).
+        """
+    )
 
     df_sample = load_sample_data()
+    st.sidebar.markdown("### Data snapshot")
+    st.sidebar.dataframe(df_sample.head(5))
 
     tab1, tab2 = st.tabs(["Single Prediction", "Batch Prediction"])
 
     with tab1:
         input_data = build_input_form(df_sample)
+        st.write("Input preview:")
+        st.json(input_data)
+
         if st.button("Predict Churn"):
-            result = predict_single(input_data)
-            st.write("**Prediction:**", result["prediction"])
-            st.write("**Churn probability:**", f"{result['churn_probability']:.4f}")
-            if result["churn_probability"] > 0.5:
-                st.error("High risk of churn")
-            else:
-                st.success("Low risk of churn")
+            try:
+                result = predict_single(input_data)
+                churn_prob = result["churn_probability"]
+                st.write("**Predicted class:**", result["prediction"])
+                st.write("**Churn probability:**", f"{churn_prob:.4f}")
+                if churn_prob > 0.5:
+                    st.error("High risk of churn")
+                else:
+                    st.success("Low risk of churn")
+            except Exception as exc:
+                st.error("Prediction failed — check logs for details.")
+                st.write(f"Error: {str(exc)}")
 
     with tab2:
-        st.subheader("Upload CSV for batch prediction")
-        uploaded = st.file_uploader("Choose cleaned CSV", type=["csv"])
+        st.subheader("Upload a cleaned CSV for batch predictions (must contain same columns as training)")
+        uploaded = st.file_uploader("Choose a CSV", type=["csv"])
         if uploaded is not None:
-            df = pd.read_csv(uploaded)
-            st.write("Preview")
-            st.dataframe(df.head())
+            uploaded_df = pd.read_csv(uploaded)
+            st.write("Preview of uploaded data:")
+            st.dataframe(uploaded_df.head())
             if st.button("Run batch prediction"):
-                result_df = predict_batch(df)
-                st.dataframe(result_df.head())
-                csv = result_df.to_csv(index=False).encode("utf-8")
-                st.download_button("Download predictions", data=csv, file_name="churn_predictions.csv", mime="text/csv")
+                try:
+                    result_df = predict_batch(uploaded_df)
+                    st.write("Prediction results (first 10 rows):")
+                    st.dataframe(result_df.head(10))
+                    csv = result_df.to_csv(index=False).encode("utf-8")
+                    st.download_button("Download predictions", data=csv, file_name="churn_predictions.csv", mime="text/csv")
+                except Exception as exc:
+                    st.error("Batch prediction failed — check logs for details.")
+                    st.write(f"Error: {str(exc)}")
 
 
 if __name__ == "__main__":

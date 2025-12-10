@@ -1,19 +1,21 @@
 """
 Training module.
 
-- Loads cleaned data (data/cleaned_data.csv)
-- Splits into train/test
-- Builds preprocessing pipeline (from preprocessing.build_preprocessor)
-- Trains multiple classifiers with GridSearchCV
-- Saves per-model best and overall best to models/
+- loads cleaned_data.csv
+- splits into train/test
+- builds preprocessor (imputer+scaler / imputer+ohe)
+- trains multiple models with GridSearchCV
+- saves per-model best and overall best model
+- saves feature column list to models/feature_columns.json
 """
 
 from pathlib import Path
 from typing import Dict, List, Tuple
+import json
 
 import joblib
-import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
@@ -21,14 +23,11 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 
-from src.config import MODEL_DIR, BEST_MODEL_PATH, CV_FOLDS, SCORING, N_JOBS, DATA_FILE
+from src.config import DATA_FILE, MODEL_DIR, BEST_MODEL_PATH, FEATURES_PATH, CV_FOLDS, SCORING, N_JOBS
 from src.preprocessing import data_load, split_data, build_preprocessor
 
 
 def get_models_and_params() -> List[Tuple[str, object, Dict[str, List]]]:
-    """
-    Return list of (name, estimator, param_grid)
-    """
     models_and_params = []
 
     log_reg = LogisticRegression(max_iter=1000)
@@ -51,9 +50,6 @@ def get_models_and_params() -> List[Tuple[str, object, Dict[str, List]]]:
 
 
 def train_and_select_model() -> pd.DataFrame:
-    """
-    Train models and return summary DataFrame.
-    """
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Loading pre-cleaned data ->", DATA_FILE)
@@ -61,13 +57,17 @@ def train_and_select_model() -> pd.DataFrame:
     print("Data shape:", df.shape)
     print("Columns:", df.columns.tolist())
 
-    # Train/test split
+    # Save feature columns (before any accidental modifications) and split
     X_train, X_test, y_train, y_test = split_data(df)
-    print("X_train columns:", X_train.columns.tolist())
-    print("Train shape:", X_train.shape, "Test shape:", X_test.shape)
+    # Save the training feature list to disk for runtime alignment
+    feature_cols = X_train.columns.tolist()
+    with open(FEATURES_PATH, "w", encoding="utf-8") as f:
+        json.dump(feature_cols, f, ensure_ascii=False, indent=2)
+    print(f"Saved feature list ({len(feature_cols)}) to {FEATURES_PATH}")
 
-    # Build preprocessor from training features (accepts df or X)
+    print("Train shape:", X_train.shape, "Test shape:", X_test.shape)
     preprocessor = build_preprocessor(X_train)
+    print("Preprocessor built.")
 
     models_and_params = get_models_and_params()
     best_overall = None
@@ -76,7 +76,7 @@ def train_and_select_model() -> pd.DataFrame:
     results = []
 
     for name, estimator, param_grid in models_and_params:
-        print(f"\n===== Training {name} =====")
+        print(f"\n=== Training {name} ===")
         pipeline = Pipeline([("preprocess", preprocessor), ("clf", estimator)])
 
         grid = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=CV_FOLDS, scoring=SCORING, n_jobs=N_JOBS, verbose=1)
@@ -85,7 +85,6 @@ def train_and_select_model() -> pd.DataFrame:
         best = grid.best_estimator_
         cv_score = grid.best_score_
 
-        # evaluate on test
         y_pred = best.predict(X_test)
         y_proba = best.predict_proba(X_test)[:, 1]
         test_roc = metrics.roc_auc_score(y_test, y_proba)
@@ -95,7 +94,6 @@ def train_and_select_model() -> pd.DataFrame:
         print(f"{name} Test ROC-AUC: {test_roc:.4f}")
         print(metrics.classification_report(y_test, y_pred))
 
-        # save per-model
         model_path = MODEL_DIR / f"{name}_best_model.joblib"
         joblib.dump(best, model_path)
         print(f"Saved {name} -> {model_path}")
@@ -107,15 +105,15 @@ def train_and_select_model() -> pd.DataFrame:
             best_overall = best
             best_name = name
 
-    # save overall best
     if best_overall is not None:
         joblib.dump(best_overall, BEST_MODEL_PATH)
-        print(f"\nOverall best model: {best_name} (ROC-AUC: {best_score:.4f}) -> saved to {BEST_MODEL_PATH}")
+        print(f"\nOverall best model: {best_name} (ROC-AUC: {best_score:.4f}) -> {BEST_MODEL_PATH}")
+    else:
+        print("No model trained successfully.")
 
     return pd.DataFrame(results)
 
 
 if __name__ == "__main__":
     df_results = train_and_select_model()
-    print("\nSummary:")
-    print(df_results)
+    print("\nSummary:\n", df_results)
