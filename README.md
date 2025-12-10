@@ -50,47 +50,47 @@ customer_churn/
   pip install -r requirements.txt
 
 ## 🧹 Data Preparation
-Data cleaning and EDA are performed in:
-•	notebooks/data_cleaning.ipynb
-•	notebooks/eda.ipynb
-After cleaning, export the processed dataset to:
-data/cleaned_data.csv
-The training pipeline expects this file to exist
+- Data cleaning and EDA are performed in:
+  •	notebooks/data_cleaning.ipynb
+  •	notebooks/eda.ipynb
+- After cleaning, export the processed dataset to:
+  data/cleaned_data.csv
+- The training pipeline expects this file to exist
 
 ## 🤖 Model Training
 Run training from the project root:
-python -m src.training
-Training will:
-•	Load cleaned data
-•	Create train/test splits (stratified)
-•	Build preprocessing pipeline
-•	Train multiple ML models using GridSearchCV
-•	Save:
-o	models/best_model.joblib
-o	models/<model>_best_model.joblib
-o	models/feature_columns.json
-The saved model and feature file ensure consistent prediction during deployment.
+- python -m src.training
+- Training will:
+  •	Load cleaned data
+  •	Create train/test splits (stratified)
+  •	Build preprocessing pipeline
+  •	Train multiple ML models using GridSearchCV
+  •	Save:
+  o	models/best_model.joblib
+  o	models/<model>_best_model.joblib
+  o	models/feature_columns.json
+- The saved model and feature file ensure consistent prediction during deployment.
 
 ## 🖥️ Run Streamlit App
 From the project root:
-streamlit run src/app.py
-Features:
-•	Single-customer prediction
-•	Batch predictions via CSV upload
-•	Automatic feature alignment
-•	Probability output
-•	Clean UI with error handling
-•	SeniorCitizen handled as a categorical (0/1) field
+- streamlit run src/app.py
+- Features:
+  •	Single-customer prediction
+  •	Batch predictions via CSV upload
+  •	Automatic feature alignment
+  •	Probability output
+  •	Clean UI with error handling
+  •	SeniorCitizen handled as a categorical (0/1) field
 
 ## 📦 Deployment & Prediction API
 src/deployment.py provides:
-predict_single(input_dict)   # returns dict with prediction + probability
-predict_batch(dataframe)     # returns dataframe with predictions appended
+- predict_single(input_dict)   # returns dict with prediction + probability
+- predict_batch(dataframe)     # returns dataframe with predictions appended
 The functions:
-•	Align input to training features
-•	Coerce numeric types
-•	Handle missing columns gracefully
-•	Ensure stable predictions
+  •	Align input to training features
+  •	Coerce numeric types
+  •	Handle missing columns gracefully
+  •	Ensure stable predictions
 
 ## 📊 Technologies Used
 •	Python 3.10+
@@ -101,15 +101,15 @@ The functions:
 •	Jupyter Notebook
 
 ## 🚀 Future Enhancements
-•	SHAP explainability
-•	FastAPI REST API
-•	Docker deployment
-•	Monitoring & model drift detection
-•	Optuna Bayesian optimization
+- •	SHAP explainability
+- •	FastAPI REST API
+- •	Docker deployment
+- •	Monitoring & model drift detection
+- •	Optuna Bayesian optimization
 
 ## 🤝 Contributing
-Contributions, suggestions, and feature requests are welcome.
-Feel free to open an issue or submit a pull request.
+- Contributions, suggestions, and feature requests are welcome.
+- Feel free to open an issue or submit a pull request.
 
 ## 🙏 Acknowledgements
 - Inspired by public telecom churn datasets.
