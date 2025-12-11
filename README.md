@@ -17,24 +17,25 @@ The workflow trains multiple ML models, selects the best one, and serves predict
 customer_churn/
 │
 ├── data/
-│   └── cleaned_data.csv
+│   ├── Telco_Customer_Churn.csv     # Raw dataset
+│   └── cleaned_data.csv             # Cleaned dataset (exported from notebooks)
 │
 ├── models/
-│   ├── best_model.joblib
-│   ├── feature_columns.json
-│   └── <model>_best_model.joblib
+│   ├── best_model.joblib            # Best overall model
+│   ├── feature_columns.json         # Feature list for runtime alignment
+│   └── <model>_best_model.joblib    # Per-model GridSearch best estimators
 │
 ├── notebooks/
-│   ├── cleaning.ipynb
-│   └── eda.ipynb
+│   ├── cleaning.ipynb               # Data cleaning & preprocessing
+│   └── eda.ipynb                    # Exploratory Data Analysis
 │
 ├── src/
 │   ├── __init__.py
-│   ├── config.py
-│   ├── preprocessing.py
-│   ├── training.py
-│   ├── deployment.py
-│   └── app.py
+│   ├── config.py                    # Global configs & paths
+│   ├── preprocessing.py             # Pipelines: imputer, scaler, encoder
+│   ├── training.py                  # Model training + GridSearchCV
+│   ├── deployment.py                # Prediction utilities for app/batch
+│   └── app.py                       # Streamlit application
 │
 └── README.md
 
