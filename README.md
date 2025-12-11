@@ -2,7 +2,7 @@
 A complete end-to-end machine learning pipeline with preprocessing, model selection, and Streamlit deployment.
 
 ## 🌟 Project Overview
-This project implements a full Customer Churn Prediction System using:
+This project implements a full Telecom Customer Churn Prediction System using:
 - Python
 - Scikit-Learn Pipelines
 - Feature Engineering (Imputation, Scaling, One-Hot Encoding)
@@ -70,6 +70,7 @@ Run training from the project root:
     - models/best_model.joblib
     - models/<model>_best_model.joblib
     - models/feature_columns.json
+  
   The saved model and feature file ensure consistent prediction during deployment.
 
 ## 🖥️ Run Streamlit App
