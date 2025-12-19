@@ -104,7 +104,7 @@ The dataset contains:
   - source venv/bin/activate   # macOS/Linux
   
 ### 3️⃣ Install dependencies
-  pip install -r requirements.txt
+  - pip install -r requirements.txt
 
 ## 🧹 Data Preparation
 - Data cleaning and EDA are performed in:
@@ -132,7 +132,7 @@ Training will:
 ## 🖥️ Run Streamlit App
 From the project root:
    - streamlit run src/app.py
-     
+
 ## Features:
   - Single-customer prediction
   - Batch predictions via CSV upload
@@ -143,7 +143,7 @@ From the project root:
 ## 📦 Deployment & Prediction API
 ### Deployment:
    - src/deployment.py
-   - 
+
 ### Prediction:
   - predict_single(input_dict)   # returns dict with prediction + probability
   - predict_batch(dataframe)     # returns dataframe with predictions appended
