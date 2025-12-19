@@ -95,22 +95,16 @@ The dataset contains:
 
 ## ⚙️ Installation & Setup
 ### 1️⃣ Clone the repository
-  '''
   git clone https://github.com/yourusername/customer_churn.git
   cd customer_churn
-  '''
   
   ### 2️⃣ Create and activate a virtual environment
-  '''
-  python -m venv venv
-  venv\Scripts\activate      # Windows
-  source venv/bin/activate   # macOS/Linux
-  '''
+  - python -m venv venv
+  - venv\Scripts\activate      # Windows
+  - source venv/bin/activate   # macOS/Linux
   
 ### 3️⃣ Install dependencies
-  '''
   pip install -r requirements.txt
-  '''
 
 ## 🧹 Data Preparation
 - Data cleaning and EDA are performed in:
@@ -122,9 +116,7 @@ The dataset contains:
 
 ## 🤖 Model Training
 Run training from the project root:
-'''
-python -m src.training
-'''
+   - python -m src.training
 Training will:
   - Load cleaned data
   - Create train/test splits (stratified)
@@ -139,9 +131,8 @@ Training will:
 
 ## 🖥️ Run Streamlit App
 From the project root:
-```
-streamlit run src/app.py
-```
+   - streamlit run src/app.py
+     
 ## Features:
   - Single-customer prediction
   - Batch predictions via CSV upload
@@ -151,9 +142,8 @@ streamlit run src/app.py
   
 ## 📦 Deployment & Prediction API
 ### Deployment:
-```
-src/deployment.py
-```
+   - src/deployment.py
+   - 
 ### Prediction:
   - predict_single(input_dict)   # returns dict with prediction + probability
   - predict_batch(dataframe)     # returns dataframe with predictions appended
