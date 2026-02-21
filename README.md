@@ -46,8 +46,8 @@ Model Training & Evaluation
 Best Model Selection
    ↓
 Streamlit Deployment
-```
 
+```
 ## 📁 Project Structure
 ```
 customer_churn/
